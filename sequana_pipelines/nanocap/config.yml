@@ -1,0 +1,47 @@
+# ============================================================================
+# Config file for Nanocap
+# ==========================================[ Sections for the users ]========
+#
+# One of input_directory, input_pattern and input_samples must be provided
+# If input_directory provided, use it otherwise if input_pattern provided,
+# use it, otherwise use input_samples.
+# ============================================================================
+input_directory: ''
+input_pattern: '*.fastq.gz'
+# Reference for minimap2
+reference: ''
+
+##############################################################################
+# Fastp used to filter small reads
+# Default options:
+#  - `-q 0`: deactivate quality per base filter
+#  - `-e 9`: filter read that has mean quality less than 10
+#  - `-l 1000`: filter read shorter than 1000 bases
+#
+# :Parameters:
+# - options: any options recognised by `fastp` cli
+#
+fastp:
+  threads: 4
+  options: "-q 0 -e 9 -l 1000"
+
+##############################################################################
+# Minimap2
+#
+# :Parameters:
+# - options: any options recognised by `minimap2` cli
+# - threads: Number of threads to use
+minimap2:
+  options: "-ax map-ont"
+  threads: 4
+
+##############################################################################
+# Multiqc
+#
+# :Parameters:
+# - options: any options recognised by `multiqc` cli
+# - modules: modules needed for the report. 
+multiqc:
+  options: ""
+  config_file: "multiqc_config.yaml"
+  modules: "fastp sequana_coverage"
