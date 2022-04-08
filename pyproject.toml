@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "sequana_nanocap"
+version = "0.1.0"
+description = "Cleaning and control pipeline for adaptive sampling sequencing"
+authors = ["Sequana Team"]
+packages = [
+    { include = "sequana_pipelines" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sequana-pipetools = "^0.8.0"
+snakemake = "^7.3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+isort = "^5.10.1"
+flake8 = "^4.0.1"
+black = "^22.3.0"
+ipython = "^8.2.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+sequana_nanocap = "sequana_pipelines.nanocap.main:main"

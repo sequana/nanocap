@@ -1,0 +1,15 @@
+{
+    "__default__": {
+        "ram": "4G",
+        "time": "fast"
+    },
+    "fastp": {
+        "ram": "8G"
+    },
+    "raw_mapping": {
+        "ram": "16G"
+    },
+    "filtered_mapping": {
+        "ram": "16G"
+    }
+}

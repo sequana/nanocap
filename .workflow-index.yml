@@ -1,0 +1,7 @@
+language: Snakemake
+name: sequana_nanocap
+description: adaptive sampling quality control
+url: https://github.com/sequana/nanocap/blob/master/sequana_pipelines/nanocap/nanocap.smk
+categories: [NGS, snakemake, sequana, nanopore]
+authors:
+    - firstname: Sequana Team

@@ -1,0 +1,10 @@
+{
+    "utils": {
+        "bamtools": "bamtools --version",
+        "fastp": "fastp --version",
+        "minimap2": "minimap2 --version",
+        "multiqc": "multiqc --version",
+        "samtools": "samtools --version",
+        "sequana_coverage": "sequana --version"
+    }
+}
