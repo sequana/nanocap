@@ -1,14 +1,14 @@
 #  This file is part of Sequana software
 #
-#  Copyright (c) 2016-2021 - Sequana Dev Team (https://sequana.readthedocs.io)
+#  Copyright (c) 2016-2022 - Sequana Dev Team (https://sequana.readthedocs.io)
 #
 #  Distributed under the terms of the 3-clause BSD license.
 #  The full license is in the LICENSE file, distributed with this software.
 #
 #  Website:       https://github.com/sequana/sequana
-#  Website:       https://github.com/sequana/lora
+#  Website:       https://github.com/sequana/nanocap
 #  Documentation: http://sequana.readthedocs.io
-#  Documentation: https://github.com/sequana/lora/README.rst
+#  Documentation: https://github.com/sequana/nanocap/README.rst
 ##############################################################################
 """ Nanocap pipeline"""
 
@@ -19,13 +19,14 @@ configfile: "config.yml"
 wrapper_version = "main"
 
 manager = PipelineManagerDirectory('nanocap', config, )
-input_directory = config.get('input_directory')
-input_pattern = config.get('input_pattern', '*.bam')
+input_directory = config.get('input_directory', '.')
+input_pattern = config.get('input_pattern', '*.fastq.gz')
 ff = FileFactory(os.path.join(input_directory, input_pattern))
 manager.samples = {sample: [file] for sample, file in zip(ff.filenames, ff.realpaths)}
 
 rule nanocap:
     input:
+        expand("{sample}/nanocap.html", sample=manager.samples),
         "multiqc/multiqc_report.html"
 
 include: "rules/common.smk"
