@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- CCS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      {% include "nanocap.css" %}
+    </style>
+    <!-- Roboto font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet"/>
+    <!-- Javascript -->
+    <script async type="text/javascript">
+      {% include "nanocap.js" %}
+    </script>
+  </head>
+  <body class="h-full flex flex-col font-sans text-base font-normal">
+    <div class="p-12 bg-sky-600 text-white flex-initial">
+      <p class="text-3xl font-semibold">
+        Nanocap Report
+      </p>
+      <p class="text-xl font-light">
+        Report created with <a href="https://github.com/sequana/nanocap">Nanocap</a> (v{{version}})
+      </p>
+    </div>
+    <div class="p-12 text-base font-light leading-8 text-slate-700 flex-auto">
+      <div class="overflow-x-auto w-full">
+        <table id="nanocap_summary" class="w-full border-collapse table-auto mb-3">
+          <thead class="font-medium border-b-2 border-gray-300">
+            {% for _, header  in key_header %}
+            <th class="text-{{'left' if loop.first else 'right'}} py-1 px-3">{{header}}</th>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for ctg, values in filtered.items() %}
+            <tr 
+              id={{"defaultOpenAssembly" if loop.first else "row_" ~ loop.index0}}
+              class="even:bg-slate-50 border-t border-gray-300"
+            >
+              <td class="text-left font-medium py-1 px-3">{{ctg}}</td>
+              {% for key, _ in key_header[1:] %}
+              <td class="text-right py-1 px-3">{{values[key]}}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% for contig, values in raw.items() %}
+        <div id="{{contig}}" class="hidden">
+          <h1 class="text-3xl font-semibold mb-4">{{contig}}</h1>
+          <div class="flex items-center flex-col">
+          <div class="flex flex-row flex-wrap justify-around w-full">
+            <div>
+              <span class='block text-sm font-semibold text-slate-700 pl-2'>
+                Raw
+              </span>
+              <img 
+               class="border shadow-sm border-slate-600 rounded-md"  
+               src="data:image/png;base64,{{values.pop('cov_image')}}"
+             />
+            </div>
+            <div>
+              <span class='block text-sm font-semibold text-slate-700 pl-2'>
+                Filtered
+              </span>
+              <img
+               class="border shadow-sm border-slate-600 rounded-md"  
+                src="data:image/png;base64,{{filtered[contig].pop('cov_image')}}"
+              />
+            </div>
+          </div>
+          <table class="table-auto text-left w-1/2 justify-center border-t-2 border-gray-300 pt-5 mt-5">
+            <thead class="font-medium border-b-2 border-gray-300">
+              <th>
+                Metric
+              </th>
+              {% for key in values.keys() %}
+                <th class="text-right">
+                  {{key}}
+                </th>
+              {% endfor %}
+            </thead>
+            <tbody>
+              <tr class="border-t border-gray-300">
+                <th>
+                  Raw  
+                </th>
+                {% for value in values.values() %}
+                  <td class="text-right">
+                    {{value}}
+                  </td>
+                {% endfor %}
+              </tr>
+              <tr class="bg-slate-50 border-t border-gray-300">
+                <th>
+                  Filtered 
+                </th>
+                {% for value in filtered[contig].values() %}
+                  <td class="text-right">
+                    {{value}}
+                  </td>
+                {% endfor %}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        </div>
+      {% endfor %}
+      </div>
+    <footer class="flex justify-center flex-initial px-2 pb-10 pt-4 bg-gray-50">
+        <p>
+          <strong>Nanocap</strong> by <a class="text-indigo-500 active:text-indigo-600"href="https://sequana.readthedocs.io/en/master/">Sequana Team</a>. The source code is licensed
+          <a class="text-indigo-500 active:text-indigo-600" href="https://opensource.org/licenses/BSD-3-Clause">BSD3</a>.
+        </p>
+    </footer>
+  </body>
+</html>
