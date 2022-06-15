@@ -17,6 +17,7 @@ from sequana_pipetools.snaketools import PipelineManagerDirectory, FileFactory, 
 shell.executable('bash')
 configfile: "config.yml"
 wrapper_version = "main"
+MAIN_SNAKEFILE = workflow.snakefile
 
 manager = PipelineManagerDirectory('nanocap', config, schema="schema.yml")
 input_directory = config.get('input_directory', '.')

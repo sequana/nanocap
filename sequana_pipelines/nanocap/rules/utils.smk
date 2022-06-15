@@ -2,7 +2,7 @@
 
 rule rulegraph:
     input:
-        workflow.snakefile
+        MAIN_SNAKEFILE
     output:
         svg = ".sequana/rulegraph.svg",
     params:
