@@ -17,8 +17,9 @@ from sequana_pipetools.snaketools import PipelineManagerDirectory, FileFactory, 
 shell.executable('bash')
 configfile: "config.yml"
 wrapper_version = "main"
+MAIN_SNAKEFILE = workflow.snakefile
 
-manager = PipelineManagerDirectory('nanocap', config, )
+manager = PipelineManagerDirectory('nanocap', config, schema="schema.yml")
 input_directory = config.get('input_directory', '.')
 input_pattern = config.get('input_pattern', '*.fastq.gz')
 ff = FileFactory(os.path.join(input_directory, input_pattern))
@@ -27,9 +28,11 @@ manager.samples = {sample: [file] for sample, file in zip(ff.filenames, ff.realp
 rule nanocap:
     input:
         expand("{sample}/nanocap.html", sample=manager.samples),
-        "multiqc/multiqc_report.html"
+        "multiqc/multiqc_report.html",
+        ".sequana/rulegraph.svg"
 
 include: "rules/common.smk"
 include: "rules/filtered_mapping.smk"
 include: "rules/raw_mapping.smk"
 include: "rules/report.smk"
+include: "rules/utils.smk"

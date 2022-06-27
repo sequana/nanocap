@@ -1,0 +1,54 @@
+type: map
+mapping:
+    "input_directory":
+        type: str
+        required: true
+
+    "input_pattern":
+        type: str
+        required: true
+
+    "reference":
+        type: str
+        required: true
+
+    "fastp":
+        type: map
+        mapping:
+            "options":
+                type: text
+                required: false
+            "threads":
+                type: int
+                required: true
+
+    "minimap2":
+        type: map
+        mapping:
+            "options":
+                type: text
+                required: false
+            "threads":
+                type: int
+                required: true
+
+    "multiqc":
+        type: map
+        mapping:
+            "options":
+                type: text
+                required: false
+            "config_file":
+                type: str
+                required: false
+            "modules":
+                type: text
+                required: false
+            
+
+    "onsuccess":
+        type: map
+        mapping:
+            "toclean":
+                type: text
+                required: true
