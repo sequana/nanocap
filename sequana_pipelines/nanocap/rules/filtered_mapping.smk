@@ -11,8 +11,11 @@ rule fastp:
         "{sample}/log/fastq.log"
     threads:
         config["fastp"]["threads"]
+    container:
+        config["apptainers"]["fastp"]
     wrapper:
         f"{wrapper_version}/wrappers/fastp"
+
 
 
 rule filtered_mapping:
@@ -27,17 +30,35 @@ rule filtered_mapping:
         "{sample}/log/filtered_mapping.log"
     threads:
         config["minimap2"]["threads"]
+    container:
+        config["apptainers"]["minimap2"]
     wrapper:
         f"{wrapper_version}/wrappers/minimap2"
 
 
-rule filtered_depth:
+rule filtered_index:
     input:
         "{sample}/filtered/mapping/{sample}.sorted.bam"
+    output:
+        "{sample}/filtered/mapping/{sample}.sorted.bam.bai"
+    container:
+        config["apptainers"]["samtools"]
+    shell:
+        """
+        samtools index {input}
+        """
+
+
+rule filtered_depth:
+    input:
+        "{sample}/filtered/mapping/{sample}.sorted.bam",
+        "{sample}/filtered/mapping/{sample}.sorted.bam.bai"
     output:
         "{sample}/filtered/depth/{sample}.bed"
     log:
         "{sample}/log/filtered_depth.log"
+    container:
+        config["apptainers"]["samtools"]
     wrapper:
         f"{wrapper_version}/wrappers/samtools_depth"
 
@@ -48,5 +69,7 @@ rule filtered_coverage:
         fasta = config["reference"]
     output:
         "{sample}/filtered/sequana_coverage/sequana_coverage.html"
+    container:
+        config["apptainers"]["sequana"]
     wrapper:
         f"{wrapper_version}/wrappers/sequana_coverage"

@@ -1,0 +1,16 @@
+name: mapper
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - bamtools
+  - fastp
+  - minimap2
+  - samtools
+  - pip:
+    - sequana
+
+

@@ -1,5 +1,21 @@
 This is is the **nanocap** pipeline from the `Sequana <https://sequana.readthedocs.org>`_ project
 
+.. image:: https://badge.fury.io/py/sequana-nanocap.svg
+     :target: https://pypi.python.org/pypi/sequana_nanocap
+
+.. image:: https://github.com/sequana/nanocap/actions/workflows/main.yml/badge.svg
+   :target: https://github.com/sequana/nanocap/actions/
+
+.. image:: https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C3.10-blue.svg
+    :target: https://pypi.python.org/pypi/sequana
+    :alt: Python 3.8 | 3.9 | 3.10
+
+.. image:: http://joss.theoj.org/papers/10.21105/joss.00352/status.svg
+   :target: http://joss.theoj.org/papers/10.21105/joss.00352
+   :alt: JOSS (journal of open source software) DOI
+
+
+
 :Overview: Adaptive sampling from nanopore quality control
 :Input: A set of fastq file.
 :Output: HTML reports to assess adaptive sampling experiment.
@@ -10,9 +26,9 @@ This is is the **nanocap** pipeline from the `Sequana <https://sequana.readthedo
 Installation
 ~~~~~~~~~~~~
 
-To install this package::
+If you already have all requirements, you can install the packages using pip::
 
-    pip install sequana_nanocap
+    pip install sequana_nanocap --upgrade
 
 
 Usage
@@ -21,7 +37,7 @@ Usage
 ::
 
     sequana_nanocap --help
-    sequana_nanocap --input-directory DATAPATH 
+    sequana_nanocap --input-directory DATAPATH  --reference-file test.fa
 
 This creates a directory with the pipeline and configuration file. You will then need 
 to execute the pipeline::
@@ -45,7 +61,7 @@ This pipelines requires the following executable(s):
 - minimap2
 - samtools
 - sequana
-
+- multiqc (installed with sequana)
 
 .. image:: https://raw.githubusercontent.com/sequana/nanocap/master/sequana_pipelines/nanocap/dag.png
 
@@ -68,6 +84,9 @@ Changelog
 ========= ====================================================================
 Version   Description
 ========= ====================================================================
+0.2.0     * add containers
+          * Fix tests adding the missing index
+          * add workflow for apptainer
 0.1.0     **First release.**
 ========= ====================================================================
 

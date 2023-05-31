@@ -1,0 +1,6 @@
+bamtools
+fastp
+minimap2
+multiqc
+samtools
+sequana_coverage
