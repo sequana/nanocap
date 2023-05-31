@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sequana_nanocap"
-version = "0.1.0"
+version = "0.2.0"
 description = "Cleaning and control pipeline for adaptive sampling sequencing"
 authors = ["Sequana Team"]
 packages = [
@@ -9,7 +9,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-sequana-pipetools = "^0.12.0"
+sequana-pipetools = "^0.12.4"
 snakemake = "^7.3.7"
 Jinja2 = "^3.1.1"
 pandas = "^1.4.2"
