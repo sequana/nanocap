@@ -10,16 +10,35 @@ rule raw_mapping:
         options = config["minimap2"]["options"]
     threads:
         config["minimap2"]["threads"]
+    container:
+        config["apptainers"]["minimap2"]
     wrapper:
         f"{wrapper_version}/wrappers/minimap2"
 
-rule raw_depth:
+
+rule raw_index:
     input:
         "{sample}/raw/mapping/{sample}.sorted.bam"
+    output:
+        "{sample}/raw/mapping/{sample}.sorted.bam.bai"
+    container:
+        config["apptainers"]["samtools"]
+    shell:
+        """
+        samtools index {input}
+        """
+
+
+rule raw_depth:
+    input:
+        "{sample}/raw/mapping/{sample}.sorted.bam",
+        "{sample}/raw/mapping/{sample}.sorted.bam.bai"
     output:
         "{sample}/raw/depth/{sample}.bed"
     log:
         "{sample}/log/raw_depth.log"
+    container:
+        config["apptainers"]["samtools"]
     wrapper:
         f"{wrapper_version}/wrappers/samtools_depth"
 
@@ -30,5 +49,7 @@ rule raw_coverage:
         fasta = config["reference"]
     output:
         "{sample}/raw/sequana_coverage/sequana_coverage.html"
+    container:
+        config["apptainers"]["sequana"]
     wrapper:
         f"{wrapper_version}/wrappers/sequana_coverage"
