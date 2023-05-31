@@ -49,7 +49,7 @@ jobs:
     - name: testing
       shell: bash -l {0}
       run: |
-        pytest -v --cov-report term-missing --cov=sequana_pipelines.fastqc
+        pytest -v --cov-report term-missing --cov=sequana_pipelines.nanocap
 
     # private for now
     #- name: coveralls
