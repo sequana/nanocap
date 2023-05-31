@@ -36,15 +36,37 @@ class BamMetrics:
                 for align in takewhile(lambda x: not x.is_unmapped, bam_in)  # take only mapped reads
             ]
         self.df = pd.DataFrame(reads_info, columns=COLNAMES)
-        self.df.set_index('ctg', inplace=True)
+        self.df.set_index("ctg", inplace=True)
+
+        with pysam.AlignmentFile(filename) as bam_in:
+            self.ctg_names = [x.contig for x in bam_in.get_index_statistics()]
 
     def get_metrics_per_chr(self):
         """Return dict with basic metrics"""
+
         iter_chr = ((ctg, self.df.loc[ctg]) for ctg in self.df.index.unique())
-        return {
-            ctg: {
-                "read_count": len(subdf.read_name.unique()),
-                "mean_length": f"{subdf.read_length.mean():.2f}",
-                "median_length": int(subdf.read_length.median())
-            } for ctg, subdf in iter_chr
-        }
+
+        def _get_read_count(subdf):
+            try:
+                return len(subdf.read_name.unique())
+            except AttributeError:
+                return 1
+
+        def _get_read_median(subdf):
+            try:
+                return int(subdf.read_length.median())
+            except AttributeError:
+                return int(subdf.read_length)
+
+        res = {}
+        for ctg in self.ctg_names:
+            try:
+                subdf = self.df.loc[ctg]
+                res[ctg] = {
+                    "read_count": _get_read_count(subdf),
+                    "mean_length": f"{subdf.read_length.mean():.2f}",
+                    "median_length": _get_read_median(subdf),
+                }
+            except KeyError:
+                res[ctg] = {"read_count": 0, "mean_length": 0, "median_length": 0}
+        return res
