@@ -12,6 +12,9 @@ mapping:
         type: str
         required: true
 
+    "apptainers":
+        type: any
+
     "fastp":
         type: map
         mapping:
