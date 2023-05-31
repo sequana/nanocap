@@ -52,6 +52,6 @@ jobs:
 
     - name: testing
       run: |
-        sequana_nanocap --input-directory tests/resources/ --reference-file tests/resources/vibrio.fa --use-apptainer && cd nanocap && sh nanocap.sh
+        sequana_nanocap --input-directory tests/resources/ --reference tests/resources/vibrio.fa --use-apptainer && cd nanocap && sh nanocap.sh
 
 
