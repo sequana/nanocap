@@ -84,6 +84,7 @@ Changelog
 ========= ====================================================================
 Version   Description
 ========= ====================================================================
+0.3.0     * refactoring to use click
 0.2.0     * add containers
           * Fix tests adding the missing index
           * add workflow for apptainer

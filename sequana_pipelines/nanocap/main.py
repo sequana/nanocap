@@ -14,85 +14,55 @@ import sys
 import os
 import argparse
 
-from sequana_pipetools.options import SlurmOptions, SnakemakeOptions, InputOptions, GeneralOptions, before_pipeline
-from sequana_pipetools.misc import Colors
-from sequana_pipetools.info import sequana_epilog, sequana_prolog
+
+
+import click_completion
+import rich_click as click
 from sequana_pipetools import SequanaManager
+from sequana_pipetools.options import *
 
-
-col = Colors()
+click_completion.init()
 
 NAME = "nanocap"
 
 
-class Options(argparse.ArgumentParser):
-    def __init__(self, prog=NAME, epilog=None):
-        usage = col.purple(sequana_prolog.format(**{"name": NAME}))
-        super(Options, self).__init__(
-            usage=usage,
-            prog=prog,
-            description="",
-            epilog=epilog,
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        )
-
-        # add a new group of options to the parser
-        so = SlurmOptions()
-        so.add_options(self)
-
-        # add a snakemake group of options to the parser
-        so = SnakemakeOptions(working_directory=NAME)
-        so.add_options(self)
-
-        so = InputOptions(input_pattern="*.fastq.gz", add_input_readtag=False)
-        so.add_options(self)
-
-        so = GeneralOptions()
-        so.add_options(self)
-
-        pipeline_group = self.add_argument_group("pipeline_general")
-        pipeline_group.add_argument(
-            "--reference", dest="reference", help="Genome reference fasta file."
-        )
-
-    def parse_args(self, *args):
-        args_list = list(*args)
-        if "--from-project" in args_list:
-            if len(args_list) > 2:
-                msg = (
-                    "WARNING [sequana]: With --from-project option,"
-                    " pipeline and data-related options will be ignored."
-                )
-                print(col.error(msg))
-            for action in self._actions:
-                if action.required is True:
-                    action.required = False
-        options = super(Options, self).parse_args(*args)
-        return options
 
 
-def main(args=None):
-    if not args:
-        args = sys.argv
+help = init_click(
+    NAME,
+    groups={
+        "Pipeline Specific": [
+            "--reference-file",
+        ],
+    },
+)
 
-    # whatever needs to be called by all pipeline before the options parsing
-    before_pipeline(NAME)
 
-    # option parsing including common epilog
-    options = Options(NAME, epilog=sequana_epilog).parse_args(args[1:])
+@click.command(context_settings=help)
+@include_options_from(ClickInputOptions, add_input_readtag=False)
+@include_options_from(ClickSnakemakeOptions, working_directory=NAME)
+@include_options_from(ClickSlurmOptions)
+@include_options_from(ClickGeneralOptions)
+@click.option("--reference-file", type=click.Path(dir_okay=False, file_okay=True), 
+    help="reference file (fasta format) to map reads onto")
+def main(**options):
+
+    if options["from_project"]:
+        click.echo("--from-project Not yet implemented")
+        sys.exit(1)
 
     # the real stuff is here
     manager = SequanaManager(options, NAME)
-
-    # create the beginning of the command and the working directory
     manager.setup()
 
-    if options.from_project is None:
-        # fill the config file with input parameters
-        cfg = manager.config.config
-        cfg.input_directory = os.path.abspath(options.input_directory)
-        cfg.input_pattern = options.input_pattern
-        cfg.reference = os.path.abspath(options.reference)
+    # aliases
+    options = manager.options
+    cfg = manager.config.config
+
+    manager.fill_data_options()
+
+    # fill the config file with input parameters
+    cfg.reference = os.path.abspath(options.reference)
 
     # finalise the command and save it; copy the snakemake. update the config
     # file and save it.

@@ -34,6 +34,8 @@ apptainers:
 fastp:
     threads: 4
     options: -q 0 -e 9 -l 1000
+    resources:
+        mem: 8G
 
 ##############################################################################
 # Minimap2
@@ -44,6 +46,17 @@ fastp:
 minimap2:
     options: -ax map-ont
     threads: 4
+
+
+raw_mapping:
+    resources:
+        mem: 16G
+
+
+filtered_mapping:
+    resources:
+        mem: 16G
+
 
 ##############################################################################
 # Multiqc

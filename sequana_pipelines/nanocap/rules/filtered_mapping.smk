@@ -11,6 +11,8 @@ rule fastp:
         "{sample}/log/fastq.log"
     threads:
         config["fastp"]["threads"]
+    resources:
+        **config["fastp"]["resources"]
     container:
         config["apptainers"]["fastp"]
     wrapper:
@@ -30,6 +32,8 @@ rule filtered_mapping:
         "{sample}/log/filtered_mapping.log"
     threads:
         config["minimap2"]["threads"]
+    resources:
+        **config["filtered_mapping"]["resources"]
     container:
         config["apptainers"]["minimap2"]
     wrapper:

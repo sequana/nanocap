@@ -10,6 +10,8 @@ rule raw_mapping:
         options = config["minimap2"]["options"]
     threads:
         config["minimap2"]["threads"]
+    resources:
+        **config["raw_mapping"]["resources"]
     container:
         config["apptainers"]["minimap2"]
     wrapper:
