@@ -16,7 +16,7 @@ rule fastp:
     container:
         config["apptainers"]["fastp"]
     wrapper:
-        f"{wrapper_version}/wrappers/fastp"
+        f"{manager.wrappers}/wrappers/fastp"
 
 
 
@@ -37,7 +37,7 @@ rule filtered_mapping:
     container:
         config["apptainers"]["minimap2"]
     wrapper:
-        f"{wrapper_version}/wrappers/minimap2"
+        f"{manager.wrappers}/wrappers/minimap2"
 
 
 rule filtered_index:
@@ -64,7 +64,7 @@ rule filtered_depth:
     container:
         config["apptainers"]["samtools"]
     wrapper:
-        f"{wrapper_version}/wrappers/samtools_depth"
+        f"{manager.wrappers}/wrappers/samtools_depth"
 
 
 rule filtered_coverage:
@@ -73,7 +73,11 @@ rule filtered_coverage:
         fasta = config["reference"]
     output:
         "{sample}/filtered/sequana_coverage/sequana_coverage.html"
+    params:
+        output_directory="{sample}/filtered/sequana_coverage",
+        circular=True,
+        window_size=20000
     container:
         config["apptainers"]["sequana"]
     wrapper:
-        f"{wrapper_version}/wrappers/sequana_coverage"
+        f"{manager.wrappers}/wrappers/sequana_coverage"

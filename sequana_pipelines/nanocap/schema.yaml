@@ -1,5 +1,9 @@
 type: map
 mapping:
+    "sequana_wrappers":
+        type: str
+        required: true
+    
     "input_directory":
         type: str
         required: true
@@ -24,6 +28,10 @@ mapping:
             "threads":
                 type: int
                 required: true
+            "resources":
+                type: any
+                required: true
+
 
     "minimap2":
         type: map
@@ -54,4 +62,18 @@ mapping:
         mapping:
             "toclean":
                 type: text
+                required: true
+
+    "raw_mapping":
+        type: map
+        mapping:
+            "resources":
+                type: any
+                required: true
+
+    "filtered_mapping":
+        type: map
+        mapping:
+            "resources":
+                type: any
                 required: true

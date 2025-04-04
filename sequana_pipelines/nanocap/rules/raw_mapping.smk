@@ -15,7 +15,7 @@ rule raw_mapping:
     container:
         config["apptainers"]["minimap2"]
     wrapper:
-        f"{wrapper_version}/wrappers/minimap2"
+        f"{manager.wrappers}/wrappers/minimap2"
 
 
 rule raw_index:
@@ -42,7 +42,7 @@ rule raw_depth:
     container:
         config["apptainers"]["samtools"]
     wrapper:
-        f"{wrapper_version}/wrappers/samtools_depth"
+        f"{manager.wrappers}/wrappers/samtools_depth"
 
 
 rule raw_coverage:
@@ -51,7 +51,12 @@ rule raw_coverage:
         fasta = config["reference"]
     output:
         "{sample}/raw/sequana_coverage/sequana_coverage.html"
+    params:
+        output_directory="{sample}/raw/sequana_coverage",
+        circular=True,
+        window_size=20000
+
     container:
         config["apptainers"]["sequana"]
     wrapper:
-        f"{wrapper_version}/wrappers/sequana_coverage"
+        f"{manager.wrappers}/wrappers/sequana_coverage"
