@@ -21,4 +21,4 @@ rule multiqc:
     log:
         "multiqc/multiqc.log"
     wrapper:
-        f"{wrapper_version}/wrappers/multiqc"
+        f"{manager.wrappers}/wrappers/multiqc"

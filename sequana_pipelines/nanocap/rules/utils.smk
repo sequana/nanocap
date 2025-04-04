@@ -10,7 +10,7 @@ rule rulegraph:
         configname = "config.yml",
         required_local_files = ["schema.yml", "rules"]
     wrapper:
-        f"{wrapper_version}/wrappers/rulegraph"
+        f"{manager.wrappers}/wrappers/rulegraph"
 
 
 rule dot2svg:
