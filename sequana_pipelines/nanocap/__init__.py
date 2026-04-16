@@ -1,5 +1,5 @@
-import pkg_resources
+import importlib.metadata
 
-version = pkg_resources.require("sequana_nanocap")[0].version
+version = importlib.metadata.version("sequana-nanocap")
 
 from .src import create_report

@@ -16,12 +16,9 @@ import argparse
 
 
 
-import click_completion
 import rich_click as click
 from sequana_pipetools import SequanaManager
 from sequana_pipetools.options import *
-
-click_completion.init()
 
 NAME = "nanocap"
 
@@ -59,10 +56,12 @@ def main(**options):
     options = manager.options
     cfg = manager.config.config
 
-    manager.fill_data_options()
-
     # fill the config file with input parameters
-    cfg.reference = os.path.abspath(options.reference)
+    cfg.input_pattern = options.input_pattern
+    cfg.input_directory = os.path.abspath(options.input_directory)
+    if options.exclude_pattern:
+        cfg.exclude_pattern = options.exclude_pattern
+    cfg.reference = os.path.abspath(options.reference_file) if options.reference_file else ""
 
     # finalise the command and save it; copy the snakemake. update the config
     # file and save it.

@@ -1,5 +1,5 @@
-bamtools
 fastp
+graphviz
 minimap2
 multiqc
 samtools

@@ -13,11 +13,12 @@ reference: /home/cokelaer/Work/github/forked/sequana_pipelines/nanocap/tests/res
 
 
 apptainers:
+    fastp: https://zenodo.org/record/17097941/files/fastp_1.0.1.img
     graphviz: https://zenodo.org/record/7928262/files/graphviz_7.0.5.img
-    fastp: https://sandbox.zenodo.org/record/1130037/files/fastp_0.23.2.img
-    sequana: https://zenodo.org/record/7863732/files/sequana_0.15.0.img
-    minimap2: https://zenodo.org/record/7987999/files/samtools_1.17_minimap2_2.24.0.img
-    samtools: https://zenodo.org/record/7987999/files/samtools_1.17_minimap2_2.24.0.img
+    minimap2: https://zenodo.org/record/18257162/files/sequana_tools_26.1.14.img
+    multiqc: https://zenodo.org/record/17100751/files/multiqc_1.27.0-zenodo1.img
+    samtools: https://zenodo.org/record/18257162/files/sequana_tools_26.1.14.img
+    sequana_coverage: https://zenodo.org/record/13946414/files/sequana_coverage_0.18.0.img
 
 
 
@@ -34,8 +35,9 @@ apptainers:
 fastp:
     threads: 4
     options: -q 0 -e 9 -l 1000
+    adapters: ''
     resources:
-        mem: 8G
+        mem_mb: 8000
 
 ##############################################################################
 # Minimap2
@@ -50,12 +52,29 @@ minimap2:
 
 raw_mapping:
     resources:
-        mem: 16G
+        mem_mb: 16000
 
 
 filtered_mapping:
     resources:
-        mem: 16G
+        mem_mb: 16000
+
+
+##############################################################################
+# sequana_coverage detects ROIs on the mapped reads
+#
+# Parameters forwarded to sequana_coverage; see `sequana_coverage --help`.
+sequana_coverage:
+    circular: True
+    window_size: 20001
+    chunksize: 5000000
+    double_threshold: 0.5
+    gc_window_size: 201
+    high_threshold: 4.
+    low_threshold: -4.
+    mixture_models: 2
+    annotation_file: ''
+    options: ''
 
 
 ##############################################################################
@@ -63,8 +82,11 @@ filtered_mapping:
 #
 # :Parameters:
 # - options: any options recognised by `multiqc` cli
-# - modules: modules needed for the report. 
+# - modules: modules needed for the report.
+# - input_directory: where multiqc should look for logs/outputs (default: .)
+# - config_file: optional multiqc config file
 multiqc:
     options: ''
+    input_directory: '.'
     config_file: multiqc_config.yaml
     modules: fastp sequana_coverage

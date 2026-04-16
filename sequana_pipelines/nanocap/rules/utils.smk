@@ -7,10 +7,10 @@ rule rulegraph:
         "rulegraph/rulegraph.dot",
     params:
         mapper = {"multiqc": "../multiqc/multiqc_report.html"},
-        configname = "config.yml",
-        required_local_files = ["schema.yml", "rules"]
-    wrapper:
-        f"{manager.wrappers}/wrappers/rulegraph"
+        configname = "config.yaml",
+        required_local_files = ["schema.yaml", "rules"]
+    run:
+        manager.get_run("rulegraph/run", "v1")(input, output, params)
 
 
 rule dot2svg:
@@ -21,4 +21,4 @@ rule dot2svg:
     container:
         config['apptainers']['graphviz']
     shell:
-        """dot -Tsvg {input} -o {output}"""
+        manager.get_shell("graphviz/dot2svg", "v1")

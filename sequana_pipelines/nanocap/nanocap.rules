@@ -19,6 +19,8 @@ configfile: "config.yaml"
 MAIN_SNAKEFILE = workflow.snakefile
 
 manager = PipelineManagerDirectory('nanocap', config, schema="schema.yaml")
+
+localrules: rulegraph, dot2svg, multiqc
 input_directory = config.get('input_directory', '.')
 input_pattern = config.get('input_pattern', '*.fastq.gz')
 ff = FileFactory(os.path.join(input_directory, input_pattern))
