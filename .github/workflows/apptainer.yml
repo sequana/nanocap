@@ -87,4 +87,4 @@ jobs:
     # Run tests using Apptainer
     - name: Run Apptainer tests
       run: |
-        sequana_nanocap --input-directory tests/resources/ --reference tests/resources/vibrio.fa --use-apptainer --apptainer-prefix ~/.apptainer/cache && cd nanocap && bash nanocap.sh
+        sequana_nanocap --input-directory tests/resources/ --reference-file tests/resources/vibrio.fa --apptainer-prefix ~/.apptainer/cache && cd nanocap && bash nanocap.sh
