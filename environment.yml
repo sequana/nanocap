@@ -1,16 +1,14 @@
-name: mapper
-
+name: nanocap
 channels:
-  - conda-forge
-  - bioconda
-  - defaults
-
+- conda-forge
+- bioconda
+- defaults
 dependencies:
-  - bamtools
-  - fastp
-  - minimap2
-  - samtools
-  - pip:
-    - sequana
-
-
+- bamtools
+- fastp
+- minimap2
+- samtools
+- graphviz
+- pulp>=2.8
+- pip:
+  - sequana

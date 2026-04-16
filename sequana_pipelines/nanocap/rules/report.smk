@@ -16,9 +16,12 @@ rule multiqc:
         "multiqc/multiqc_report.html"
     params:
         options = config["multiqc"]["options"],
+        input_directory = config["multiqc"]["input_directory"],
         config_file = config["multiqc"]["config_file"],
         modules = config["multiqc"]["modules"]
     log:
         "multiqc/multiqc.log"
-    wrapper:
-        f"{manager.wrappers}/wrappers/multiqc"
+    container:
+        config["apptainers"]["multiqc"]
+    shell:
+        manager.get_shell("multiqc/run", "v1")

@@ -1,9 +1,5 @@
 type: map
 mapping:
-    "sequana_wrappers":
-        type: str
-        required: true
-    
     "input_directory":
         type: str
         required: true
@@ -25,6 +21,9 @@ mapping:
             "options":
                 type: text
                 required: false
+            "adapters":
+                type: text
+                required: false
             "threads":
                 type: int
                 required: true
@@ -43,11 +42,17 @@ mapping:
                 type: int
                 required: true
 
+    "sequana_coverage":
+        type: any
+
     "multiqc":
         type: map
         mapping:
             "options":
                 type: text
+                required: false
+            "input_directory":
+                type: str
                 required: false
             "config_file":
                 type: str
@@ -55,7 +60,7 @@ mapping:
             "modules":
                 type: text
                 required: false
-            
+
 
     "onsuccess":
         type: map
