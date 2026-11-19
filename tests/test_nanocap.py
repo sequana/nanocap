@@ -1,24 +1,52 @@
-import os
 import subprocess
-import sys
 
-import sequana_pipelines.nanocap.main as m
+import yaml
+
+from sequana_pipelines.nanocap import version
 
 from . import test_dir
 
 
-def test_standalone_subprocess(tmpdir):
-    input_dir = test_dir / 'resources'
-    cmd = ["sequana_nanocap", "--input-directory", str(input_dir), "--working-directory", str(tmpdir), "--force"]
-    subprocess.call(cmd)
+def _run(args):
+    return subprocess.run(args, capture_output=True, text=True)
 
 
-def _test_standalone_script(tmpdir):
-    input_dir = test_dir / 'resources'
-    sys.argv = ["test", "--input-directory", str(input_dir), "--working-directory", str(tmpdir), "--force"]
-    m.main()
+def test_standalone_subprocess(tmp_path):
+    input_dir = test_dir / "resources"
+    workdir = tmp_path / "nanocap"
+    cmd = ["sequana_nanocap", "--input-directory", str(input_dir), "--working-directory", str(workdir), "--force"]
+    assert _run(cmd).returncode == 0
+    for name in ("config.yaml", "nanocap.rules", "nanocap.sh", "schema.yaml"):
+        assert (workdir / name).exists()
+
+
+def test_reference_is_copied_in_working_directory(tmp_path):
+    input_dir = test_dir / "resources"
+    reference = test_dir / "resources" / "vibrio.fa"
+    workdir = tmp_path / "nanocap"
+    cmd = [
+        "sequana_nanocap",
+        "--input-directory",
+        str(input_dir),
+        "--reference-file",
+        str(reference),
+        "--working-directory",
+        str(workdir),
+        "--force",
+    ]
+    assert _run(cmd).returncode == 0
+
+    copied = workdir / "references" / "vibrio.fa"
+    assert copied.exists()
+    assert copied.read_text() == reference.read_text()
+
+    with open(workdir / "config.yaml") as fin:
+        config = yaml.safe_load(fin)
+    # the pipeline must use the copy (absolute path: rulegraph runs from a sub-directory)
+    assert config["reference"] == str(copied)
 
 
 def test_version():
-    cmd = ["sequana_nanocap", "--version"]
-    subprocess.call(cmd)
+    result = _run(["sequana_nanocap", "--version"])
+    assert result.returncode == 0
+    assert version in result.stdout + result.stderr

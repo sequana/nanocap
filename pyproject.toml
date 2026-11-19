@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "sequana-nanocap"
-version = "0.5.0"
+version = "0.6.0"
 description = "Cleaning and control pipeline for adaptive sampling sequencing"
 authors = ["Sequana Team <thomas.cokelaer@pasteur.fr>"]
 license = "BSD-3"
@@ -42,6 +42,7 @@ pulp = ">=2.8"
 click = "^8.1.7"
 rich-click = "^1.7.2"
 pandas = ">=2.0.0"
+pysam = ">=0.22"
 Jinja2 = ">=3.1.2"
 
 [tool.poetry.scripts]

@@ -61,7 +61,18 @@ def main(**options):
     cfg.input_directory = os.path.abspath(options.input_directory)
     if options.exclude_pattern:
         cfg.exclude_pattern = options.exclude_pattern
-    cfg.reference = os.path.abspath(options.reference_file) if options.reference_file else ""
+    cfg.reference = ""
+    if options.reference_file:
+        # copy the reference in the working directory for book keeping. The pipeline uses the copy.
+        # abspath is required: the rulegraph rule runs snakemake from a sub-directory.
+        import shutil
+
+        reference_file = os.path.abspath(options.reference_file)
+        manager.exists(reference_file)
+        references_directory = os.path.join(os.path.abspath(manager.workdir), "references")
+        os.makedirs(references_directory, exist_ok=True)
+        shutil.copy(reference_file, references_directory)
+        cfg.reference = os.path.join(references_directory, os.path.basename(reference_file))
 
     # finalise the command and save it; copy the snakemake. update the config
     # file and save it.

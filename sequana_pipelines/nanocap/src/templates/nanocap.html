@@ -17,14 +17,15 @@
     </script>
   </head>
   <body class="h-full flex flex-col font-sans text-base font-normal">
-    <div class="p-12 bg-sky-600 text-white flex-initial">
-      <p class="text-3xl font-semibold">
-        Nanocap Report
-      </p>
-      <p class="text-xl font-light">
-        Report created with <a href="https://github.com/sequana/nanocap">Nanocap</a> (v{{version}})
-      </p>
-    </div>
+    <header class="sequana-header">
+      <img class="sequana-logo" src="data:image/png;base64,{{logo_b64}}" alt="Sequana logo" />
+      <h1 class="sequana-title">Nanocap Report ({{sample}})</h1>
+      <h2 class="sequana-subtitle">
+        Report created with <a href="http://sequana.readthedocs.org">Sequana</a> (v{{sequana_version}})
+        and <a href="https://github.com/sequana/nanocap">sequana_nanocap</a> (v{{version}})
+        &mdash; <a href="../summary.html">Back to summary</a>
+      </h2>
+    </header>
     <div class="p-12 text-base font-light leading-8 text-slate-700 flex-auto">
       <div class="overflow-x-auto w-full">
         <table id="nanocap_summary" class="w-full border-collapse table-auto mb-3">
@@ -110,11 +111,19 @@
         </div>
       {% endfor %}
       </div>
-    <footer class="flex justify-center flex-initial px-2 pb-10 pt-4 bg-gray-50">
+    <footer class="sequana-footer">
+      <div class="sequana-footer-content">
+        This pipeline is part of the <a href="http://sequana.readthedocs.io" target="_blank">Sequana project</a>.
+        Please consider citing us:
+        <ul class="sequana-citations">
+          <li>{{citation[0]}} <a href="https://doi.org/{{citation[1]}}" target="_blank">doi:{{citation[1]}}</a></li>
+        </ul>
         <p>
-          <strong>Nanocap</strong> by <a class="text-indigo-500 active:text-indigo-600"href="https://sequana.readthedocs.io/en/master/">Sequana Team</a>. The source code is licensed
-          <a class="text-indigo-500 active:text-indigo-600" href="https://opensource.org/licenses/BSD-3-Clause">BSD3</a>.
+          You may also star us:
+          <a href="https://github.com/sequana/nanocap" target="_blank">sequana/nanocap</a> |
+          <a href="https://github.com/sequana/sequana" target="_blank">sequana/sequana</a>
         </p>
+      </div>
     </footer>
   </body>
 </html>
