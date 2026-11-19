@@ -16,9 +16,9 @@ This is the **nanocap** pipeline from the `Sequana <https://sequana.readthedocs.
 
 
 
-:Overview: Adaptive-sampling nanopore quality control. Maps long reads onto a reference (raw and fastp-filtered), computes per-base coverage with ``sequana_coverage``, and aggregates a MultiQC report.
+:Overview: Adaptive-sampling nanopore quality control. Maps long reads onto a reference (raw and fastp-filtered), computes per-base coverage with ``sequana_coverage``, and aggregates the results in a ``summary.html`` entry point and a MultiQC report.
 :Input: A directory of single-end FastQ files (``*.fastq.gz``) and a reference FASTA.
-:Output: Per-sample HTML coverage reports (raw + filtered), a combined ``nanocap.html`` per sample, and a global MultiQC report.
+:Output: ``summary.html`` (main entry point), per-sample HTML coverage reports (raw + filtered), a combined ``nanocap.html`` per sample, and a global MultiQC report.
 :Status: production
 :Citation: Cokelaer et al, (2017), 'Sequana': a Set of Snakemake NGS pipelines, Journal of Open Source Software, 2(16), 352, JOSS DOI doi:10.21105/joss.00352
 
@@ -50,7 +50,9 @@ Usage
     sequana_nanocap --input-directory DATAPATH --reference-file reference.fa
 
 This creates a working directory with the Snakemake workflow and a generated
-``config.yaml``. Launch the pipeline with::
+``config.yaml``. The reference file is copied into the ``references/``
+sub-directory of the working directory (for book keeping) and the pipeline uses
+that copy. Launch the pipeline with::
 
     cd nanocap
     bash nanocap.sh     # local run (bash, not sh — pipefail is a bashism)
@@ -98,9 +100,22 @@ For each input FastQ the pipeline runs two branches in parallel:
 2. **filtered** — same flow, after quality/length filtering with ``fastp``
    (defaults: ``-q 0 -e 9 -l 1000``).
 
-A per-sample ``{sample}/nanocap.html`` page aggregates both coverage reports,
-and a top-level ``multiqc/multiqc_report.html`` combines the fastp and
-sequana_coverage outputs across all samples.
+A per-sample ``{sample}/nanocap.html`` page aggregates both coverage reports
+(with a link back to ``summary.html``), and a top-level
+``multiqc/multiqc_report.html`` combines the fastp and sequana_coverage outputs
+across all samples.
+
+Once the pipeline is finished, open ``summary.html`` in the working directory.
+This is the main entry point. It follows the standard Sequana report layout and
+contains:
+
+- an overview with the (relative) path to the reference and a link to the
+  MultiQC report;
+- a per-sample table: number of reads before and after fastp filtering,
+  percentage of reads kept, number of mapped alignments (raw and filtered), and
+  links to the Nanocap, fastp and sequana_coverage (raw and filtered) reports;
+- the workflow (DAG), with links to the Snakemake and configuration files;
+- the dependencies and the command used to set up the pipeline.
 
 
 Rules and configuration details
@@ -117,6 +132,27 @@ Changelog
 ========= ====================================================================
 Version   Description
 ========= ====================================================================
+0.6.0     * Add ``summary.html``, the main entry point of the analysis, created
+            with the standard Sequana report layout (header, sidebar, DAG,
+            config file, dependencies, command, footer). It contains a
+            per-sample table (reads before/after fastp, percentage kept, mapped
+            alignments) with links to the Nanocap, fastp and sequana_coverage
+            reports, and a link to the MultiQC report. It is created in the
+            ``onsuccess`` section, which now also calls ``manager.teardown()``
+            and ``manager.onerror()`` on failure.
+          * Per-sample ``nanocap.html`` reports now use a Sequana-like
+            header/footer (logo, versions, citation) and a link back to
+            ``summary.html``.
+          * The ``--reference-file`` is now copied into the ``references/``
+            directory of the working directory when initiating the pipeline;
+            the pipeline uses this copy.
+          * Declare ``pysam`` explicitly as a dependency (used by the BAM
+            metrics).
+          * Tests: new tests for the summary, the reference copy and the
+            version; tests no longer write in the current directory.
+          * CI: remove the unused ``[testing]`` extra, use ``actions/cache@v4``,
+            stop echoing the coveralls token, and check that ``summary.html`` is
+            created in the apptainer workflow.
 0.5.0     * Migrate packaging from ``setup.py`` to Poetry (``pyproject.toml``).
           * Replace ``pkg_resources`` with ``importlib.metadata`` in
             ``__init__.py``.

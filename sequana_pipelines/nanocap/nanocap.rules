@@ -37,3 +37,15 @@ include: "rules/filtered_mapping.smk"
 include: "rules/raw_mapping.smk"
 include: "rules/report.smk"
 include: "rules/utils.smk"
+
+
+onsuccess:
+    from sequana_pipelines.nanocap import create_summary
+
+    shell("chmod -R g+w .")
+    manager.teardown(extra_dirs_to_remove=[".cache"])
+    create_summary(manager.getmetadata(), list(manager.samples), config)
+
+
+onerror:
+    manager.onerror()

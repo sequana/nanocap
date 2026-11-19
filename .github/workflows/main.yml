@@ -48,7 +48,7 @@ jobs:
     - name: Install dependencies
       shell: micromamba-shell {0}
       run: |
-        pip install coveralls pytest-cov pytest pytest-xdist
+        pip install coveralls pytest-cov pytest
 
     - name: testing
       shell: micromamba-shell {0}
@@ -59,7 +59,6 @@ jobs:
       continue-on-error: true
       shell: micromamba-shell {0}
       run: |
-        echo $COVERALLS_REPO_TOKEN
         coveralls --service=github
       env:
           GITHUB_TOKEN: ${{ github.token }}

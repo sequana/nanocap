@@ -30,7 +30,7 @@ jobs:
 
     # Cache APT .deb packages
     - name: Cache APT archives
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: /var/cache/apt/archives
         key: ${{ runner.os }}-apt-cache-v1
@@ -38,7 +38,7 @@ jobs:
     # Cache Apptainer installation
     - name: Cache Apptainer install
       id: cache-apptainer
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           /usr/bin/apptainer
@@ -56,9 +56,21 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y apptainer
 
+    # Recent Ubuntu runners restrict unprivileged user namespaces (AppArmor), which makes
+    # apptainer fail to extract images ("Failed to create container process: Operation not
+    # permitted"). This must be done on every run (not part of the apptainer cache).
+    - name: Allow unprivileged user namespaces
+      run: |
+        sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+
+    # Let apptainer mount SIF/EXT3 images instead of extracting them to a sandbox
+    - name: Install squashfuse and fuse2fs
+      run: |
+        sudo apt-get install -y squashfuse fuse2fs || true
+
     # Cache Apptainer image cache (~/.apptainer/cache)
     - name: Cache Apptainer images
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.apptainer/cache
         key: ${{ runner.os }}-apptainer-images-v1
@@ -77,7 +89,6 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .[testing]
 
     # Install package
     - name: Install package itself
@@ -88,3 +99,11 @@ jobs:
     - name: Run Apptainer tests
       run: |
         sequana_nanocap --input-directory tests/resources/ --reference-file tests/resources/vibrio.fa --apptainer-prefix ~/.apptainer/cache && cd nanocap && bash nanocap.sh
+
+    # The pipeline must create its main entry point and the per-sample reports
+    - name: Check outputs
+      run: |
+        test -f nanocap/summary.html
+        test -f nanocap/multiqc/multiqc_report.html
+        test -f nanocap/references/vibrio.fa
+        ls nanocap/*/nanocap.html
