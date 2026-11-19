@@ -71,8 +71,12 @@ def main(**options):
         manager.exists(reference_file)
         references_directory = os.path.join(os.path.abspath(manager.workdir), "references")
         os.makedirs(references_directory, exist_ok=True)
-        shutil.copy(reference_file, references_directory)
-        cfg.reference = os.path.join(references_directory, os.path.basename(reference_file))
+        destination = os.path.join(references_directory, os.path.basename(reference_file))
+        # when regenerating a setup with --force, the reference may already be the archived copy
+        if not (os.path.exists(destination) and os.path.samefile(reference_file, destination)):
+            # copy2 preserves the timestamps: an unchanged reference does not trigger reruns
+            shutil.copy2(reference_file, destination)
+        cfg.reference = destination
 
     # finalise the command and save it; copy the snakemake. update the config
     # file and save it.

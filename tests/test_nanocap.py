@@ -50,3 +50,29 @@ def test_version():
     result = _run(["sequana_nanocap", "--version"])
     assert result.returncode == 0
     assert version in result.stdout + result.stderr
+
+
+def test_regenerate_setup_with_archived_reference(tmp_path):
+    """--force with the archived reference (<workdir>/references/...) must not fail nor touch the copy."""
+    input_dir = test_dir / "resources"
+    workdir = tmp_path / "nanocap"
+    cmd = [
+        "sequana_nanocap",
+        "--input-directory",
+        str(input_dir),
+        "--reference-file",
+        str(test_dir / "resources" / "vibrio.fa"),
+        "--working-directory",
+        str(workdir),
+        "--force",
+    ]
+    assert _run(cmd).returncode == 0
+    copied = workdir / "references" / "vibrio.fa"
+    # the copy preserves the timestamp of the source
+    assert copied.stat().st_mtime == (test_dir / "resources" / "vibrio.fa").stat().st_mtime
+    mtime = copied.stat().st_mtime_ns
+
+    cmd[cmd.index("--reference-file") + 1] = str(copied)
+    result = _run(cmd)
+    assert result.returncode == 0, result.stderr
+    assert copied.stat().st_mtime_ns == mtime
