@@ -12,11 +12,13 @@
 ##############################################################################
 import base64
 import glob
+import html
 import importlib.metadata
 import json
 import os
 from contextlib import ExitStack
 from pathlib import Path
+from urllib.parse import quote
 
 import pysam
 from jinja2 import Environment, PackageLoader
@@ -153,17 +155,20 @@ def get_summary_table(samples, nanocap_dir="."):
     for sample in samples:
         before, after = get_fastp_counts(sample, nanocap_dir)
         kept = f"{after / before * 100:.1f}" if before else "NA"
+        # the original name is used for file system lookups; links use the URL-encoded name
+        # (e.g., "#" would otherwise be interpreted as a fragment) and the label is HTML-escaped
+        name = quote(sample)
         cells = [
-            f"<th scope='row'>{sample}</th>",
+            f"<th scope='row'>{html.escape(sample)}</th>",
             f"<td>{_fmt(before)}</td>",
             f"<td>{_fmt(after)}</td>",
             f"<td>{kept}</td>",
             f"<td>{_fmt(get_mapped_count(sample, 'raw', nanocap_dir))}</td>",
             f"<td>{_fmt(get_mapped_count(sample, 'filtered', nanocap_dir))}</td>",
-            "<td>" + link.format(f"{sample}/nanocap.html", "Nanocap") + "</td>",
-            "<td>" + link.format(f"{sample}/fastp/{sample}.html", "fastp") + "</td>",
-            "<td>" + link.format(f"{sample}/raw/sequana_coverage/sequana_coverage.html", "raw") + "</td>",
-            "<td>" + link.format(f"{sample}/filtered/sequana_coverage/sequana_coverage.html", "filtered") + "</td>",
+            "<td>" + link.format(f"{name}/nanocap.html", "Nanocap") + "</td>",
+            "<td>" + link.format(f"{name}/fastp/{name}.html", "fastp") + "</td>",
+            "<td>" + link.format(f"{name}/raw/sequana_coverage/sequana_coverage.html", "raw") + "</td>",
+            "<td>" + link.format(f"{name}/filtered/sequana_coverage/sequana_coverage.html", "filtered") + "</td>",
         ]
         rows.append("<tr>" + "".join(cells) + "</tr>")
 

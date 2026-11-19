@@ -100,3 +100,15 @@ def test_create_summary(tmp_path, monkeypatch):
     # the reference is shown with a relative path
     assert "<code>references/ref.fa</code>" in html
     assert str(root) not in html.split("<code>")[1].split("</code>")[0]
+
+
+def test_get_summary_table_special_characters(tmp_path):
+    """Sample names with URL/HTML special characters must give valid links."""
+    root = _fake_run_directory(tmp_path, sample="sample#1")
+    html = get_summary_table(["sample#1"], root)
+    assert 'href="sample%231/nanocap.html"' in html
+    assert 'href="sample%231/fastp/sample%231.html"' in html
+    assert 'href="sample%231/raw/sequana_coverage/sequana_coverage.html"' in html
+    assert 'href="sample#1' not in html
+    # the metrics are still found with the original name
+    assert "25.0" in html
