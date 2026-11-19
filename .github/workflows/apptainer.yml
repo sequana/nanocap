@@ -56,6 +56,18 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y apptainer
 
+    # Recent Ubuntu runners restrict unprivileged user namespaces (AppArmor), which makes
+    # apptainer fail to extract images ("Failed to create container process: Operation not
+    # permitted"). This must be done on every run (not part of the apptainer cache).
+    - name: Allow unprivileged user namespaces
+      run: |
+        sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+
+    # Let apptainer mount SIF/EXT3 images instead of extracting them to a sandbox
+    - name: Install squashfuse and fuse2fs
+      run: |
+        sudo apt-get install -y squashfuse fuse2fs || true
+
     # Cache Apptainer image cache (~/.apptainer/cache)
     - name: Cache Apptainer images
       uses: actions/cache@v4
